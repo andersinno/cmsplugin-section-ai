@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from cms.models import CMSPlugin, Page
-from cmsplugin_section.enums import SectionType, BackgroundColor, ButtonStyle
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from enumfields import EnumIntegerField, EnumField
 from filer.fields.file import FilerFileField
+
+from .enums import SectionType, BackgroundColor, ButtonStyle
 
 
 class Section(CMSPlugin):

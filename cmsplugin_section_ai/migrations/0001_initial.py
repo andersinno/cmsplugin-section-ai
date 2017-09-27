@@ -3,9 +3,10 @@ from __future__ import unicode_literals
 
 from django.db import migrations, models
 import filer.fields.file
-import cmsplugin_section.enums
 import enumfields.fields
 import django.db.models.deletion
+
+from .. import enums
 
 
 class Migration(migrations.Migration):
@@ -22,17 +23,17 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('text', models.CharField(verbose_name='button text', max_length=75)),
                 ('url', models.CharField(verbose_name='url', max_length=250, blank=True)),
-                ('style', enumfields.fields.EnumField(verbose_name='Button style', enum=cmsplugin_section.enums.ButtonStyle, max_length=50, default='btn-primary')),
+                ('style', enumfields.fields.EnumField(verbose_name='Button style', enum=enums.ButtonStyle, max_length=50, default='btn-primary')),
                 ('anchor', models.CharField(verbose_name='bind to anchor', help_text='Set the anchor identifier of an element. Leave out the # prefix.', blank=True, max_length=30)),
             ],
         ),
         migrations.CreateModel(
             name='Section',
             fields=[
-                ('cmsplugin_ptr', models.OneToOneField(to='cms.CMSPlugin', primary_key=True, related_name='cmsplugin_section_section', serialize=False, parent_link=True, auto_created=True)),
-                ('type', enumfields.fields.EnumIntegerField(verbose_name='section type', enum=cmsplugin_section.enums.SectionType, default=1)),
+                ('cmsplugin_ptr', models.OneToOneField(to='cms.CMSPlugin', primary_key=True, related_name='cmsplugin_section_ai_section', serialize=False, parent_link=True, auto_created=True)),
+                ('type', enumfields.fields.EnumIntegerField(verbose_name='section type', enum=enums.SectionType, default=1)),
                 ('title', models.CharField(verbose_name='title', help_text='Visible title for this section', blank=True, max_length=75)),
-                ('background_color', enumfields.fields.EnumField(verbose_name='background color', enum=cmsplugin_section.enums.BackgroundColor, max_length=50, default='bg-color-transparent')),
+                ('background_color', enumfields.fields.EnumField(verbose_name='background color', enum=enums.BackgroundColor, max_length=50, default='bg-color-transparent')),
                 ('full_width', models.BooleanField(verbose_name='make the content 100% wide', default=False)),
                 ('no_top_margin', models.BooleanField(verbose_name='remove top margin from this section', default=False)),
                 ('no_bottom_margin', models.BooleanField(verbose_name='remove bottom margin from this section', default=False)),
@@ -49,10 +50,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='SectionButton',
             fields=[
-                ('link_ptr', models.OneToOneField(to='cmsplugin_section.Link', primary_key=True, parent_link=True, serialize=False, auto_created=True)),
-                ('section', models.ForeignKey(verbose_name='section', to='cmsplugin_section.Section', related_name='section_buttons')),
+                ('link_ptr', models.OneToOneField(to='cmsplugin_section_ai.Link', primary_key=True, parent_link=True, serialize=False, auto_created=True)),
+                ('section', models.ForeignKey(verbose_name='section', to='cmsplugin_section_ai.Section', related_name='section_buttons')),
             ],
-            bases=('cmsplugin_section.link',),
+            bases=('cmsplugin_section_ai.link',),
         ),
         migrations.AddField(
             model_name='link',
