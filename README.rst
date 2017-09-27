@@ -5,6 +5,8 @@ This is a Django CMS container plugin for creating content sections. Default
 templating relies on Bootstrap 3 and you need to write your own custom styles for
 this plugin to work properly.
 
+Available with pip https://pypi.python.org/pypi/cmsplugin-section-ai
+
 Features
 --------
 
