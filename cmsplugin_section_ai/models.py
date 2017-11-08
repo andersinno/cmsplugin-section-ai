@@ -2,19 +2,26 @@
 from cms.models import CMSPlugin, Page
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from enumfields import EnumIntegerField, EnumField
+from enumfields import EnumField
 from filer.fields.file import FilerFileField
 
-from .enums import SectionType, BackgroundColor, ButtonStyle
-
+from .enums import (
+    BackgroundColor,
+    ButtonSize,
+    ButtonStyle,
+    ContainerSize,
+    Justify,
+    SectionPadding,
+    SectionType,
+    VerticalAlign
+)
 
 class Section(CMSPlugin):
-    type = EnumIntegerField(SectionType, verbose_name=_("section type"), default=SectionType.SINGLE_COLUMN)
-    title = models.CharField(
-        verbose_name=_("title"),
-        max_length=75,
-        blank=True,
-        help_text=_("Visible title for this section")
+    section_type = EnumField(
+        SectionType,
+        verbose_name=_("section type"),
+        max_length=50,
+        default=SectionType.ONE_COLUMN
     )
     background_color = EnumField(
         BackgroundColor,
@@ -29,11 +36,50 @@ class Section(CMSPlugin):
         on_delete=models.SET_NULL,
         help_text=_("This overrides any given background color")
     )
-    full_width = models.BooleanField(verbose_name=_("make the content 100% wide"), default=False)
-    no_top_margin = models.BooleanField(verbose_name=_("remove top margin from this section"), default=False)
-    no_bottom_margin = models.BooleanField(verbose_name=_("remove bottom margin from this section"), default=False)
-    extra_margin = models.BooleanField(verbose_name=_("add extra vertical margin for content"), default=False)
-    text_center = models.BooleanField(verbose_name=_("align content text to center"), default=False)
+    section_padding_top = EnumField(
+        SectionPadding,
+        verbose_name=_("top padding for this section"),
+        max_length=50,
+        default=SectionPadding.LARGE
+    )
+    section_padding_bottom = EnumField(
+        SectionPadding,
+        verbose_name=_("bottom padding for this section"),
+        max_length=50,
+        default=SectionPadding.LARGE
+    )
+    container_width = EnumField(
+        ContainerSize,
+        verbose_name=_("container width"),
+        max_length=50,
+        default=ContainerSize.CONTAINER
+    )
+    title = models.CharField(
+        verbose_name=_("title"),
+        max_length=75,
+        blank=True,
+        help_text=_("Visible title for this section")
+    )
+    title_position = EnumField(
+        Justify,
+        verbose_name=_("title alignment"),
+        max_length=50,
+        default=Justify.LEFT
+    )
+    column_vertical_alignment = EnumField(
+        VerticalAlign,
+        verbose_name=_("vertical alignment for columns"),
+        max_length=75,
+        default=VerticalAlign.TOP
+    )
+    extra_margin = models.BooleanField(verbose_name=_("add extra vertical margin for inner columns"), default=False)
+    text_center = models.BooleanField(verbose_name=_("align column content text to center"), default=False)
+    button_position = EnumField(
+        Justify,
+        verbose_name=_("section button alignment"),
+        max_length=50,
+        default=Justify.LEFT
+    )
     anchor = models.CharField(
         verbose_name=_("anchor identifier"),
         max_length=50,
@@ -42,31 +88,34 @@ class Section(CMSPlugin):
     )
 
     def __str__(self):
-        return "%s - %s" % (self.type.label, self.title)
+        return "%s - %s" % (self.section_type.label, self.title)
 
     @property
     def section_classes(self):
-        classes = ""
-        if self.no_top_margin and self.no_bottom_margin:
-            classes = "no-top-margin no-bottom-margin"
-        elif self.no_top_margin:
-            classes = "no-top-margin"
-        elif self.no_bottom_margin:
-            classes = "no-bottom-margin"
+        classes = "%s %s-top %s-bottom" % (
+            self.section_type.value, self.section_padding_top.value, self.section_padding_bottom.value
+        )
 
         if self.background_image:
-            classes += " bg-image"
+            classes += " section-bg-image"
         else:
             classes += " " + self.background_color.value
+
         return classes
 
-    @property
-    def container_classes(self):
-        classes = "container"
-        if self.full_width:
-            classes += "-fluid"
-        if self.text_center:
-            classes += " text-center"
+    def column_classes(self):
+        classes = "col-12"
+
+        if self.section_type == SectionType.TWO_COLUMNS:
+            classes += " col-md-6"
+        elif self.section_type == SectionType.THREE_COLUMNS:
+            classes += " col-lg-4"
+        elif self.section_type == SectionType.FOUR_COLUMNS:
+            classes += " col-md-6 col-lg-3"
+
+        if self.extra_margin:
+            classes += " column-extra-vertical-margin"
+
         return classes
 
     def copy_relations(self, oldinstance):
@@ -90,7 +139,8 @@ class Link(models.Model):
         help_text=_("Page link overrides any given URL."),
         related_name="section"
     )
-    style = EnumField(ButtonStyle, verbose_name=_("Button style"), max_length=50, default=ButtonStyle.PRIMARY)
+    style = EnumField(ButtonStyle, verbose_name=_("button style"), max_length=50, default=ButtonStyle.PRIMARY)
+    size = EnumField(ButtonSize, verbose_name=_("button size"), max_length=50, default=ButtonSize.MD)
     anchor = models.CharField(
         verbose_name=_("bind to anchor"),
         max_length=30,
@@ -104,12 +154,15 @@ class Link(models.Model):
     @property
     def link(self):
         link = ""
+
         if self.page_link:
             link = self.page_link.get_absolute_url()
         elif self.url:
             link = self.url
+
         if self.anchor:
             return "%s#%s" % (link, self.anchor)
+
         return link or "#"
 
 
