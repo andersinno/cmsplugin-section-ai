@@ -1,0 +1,24 @@
+$section-padding-xl: 200px;
+$section-padding-lg: 100px;
+$section-padding-md: 60px;
+$section-padding-sm: 30px;
+
+$section-primary-bg:    theme-color("primary");
+$section-primary-color: #fff;
+
+$section-secondary-bg:    theme-color("secondary");
+$section-secondary-color: #fff;
+
+$section-light-gray-bg:    gray("100");
+$section-light-gray-color: $body-color;
+
+$section-transparent-bg:    $body-bg;
+$section-transparent-color: $body-color;
+
+$section-bg-image-color:           #fff;
+$section-bg-image-attachment:      fixed;
+$section-bg-image-overlay-opacity: 0.6;
+$section-bg-image-overlay:         linear-gradient(45deg, theme-color("primary"), theme-color("secondary"));
+$section-bg-image-text-shadow:     1px 1px 2px rgba(0, 0, 0, 0.3);
+
+$section-column-extra-vertical-padding: $grid-gutter-width / 2;
