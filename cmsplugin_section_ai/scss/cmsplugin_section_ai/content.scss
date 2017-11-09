@@ -1,0 +1,6 @@
+.cmsplugin-section__column {
+    &.column-extra-vertical-margin {
+        margin-top: $section-column-extra-vertical-padding;
+        margin-bottom: $section-column-extra-vertical-padding;
+    }
+}

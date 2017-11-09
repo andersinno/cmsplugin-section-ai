@@ -1,0 +1,91 @@
+.cmsplugin-section {
+    position: relative;
+
+    &.extra-large-padding-top {
+        padding-top: $section-padding-xl;
+    }
+    &.large-padding-top {
+        padding-top: $section-padding-lg;
+    }
+    &.medium-padding-top {
+        padding-top: $section-padding-md;
+    }
+    &.small-padding-top {
+        padding-top: $section-padding-sm;
+    }
+
+    &.extra-large-padding-bottom {
+        padding-bottom: $section-padding-xl;
+    }
+    &.large-padding-bottom {
+        padding-bottom: $section-padding-lg;
+    }
+    &.medium-padding-bottom {
+        padding-bottom: $section-padding-md;
+    }
+    &.small-padding-bottom {
+        padding-bottom: $section-padding-sm;
+    }
+
+    &.bg-color-transparent {
+        background: $section-transparent-bg;
+        color: $section-transparent-color;
+    }
+    &.bg-color-light-gray {
+        background: $section-light-gray-bg;
+        color: $section-light-gray-color;
+    }
+    &.bg-color-primary {
+        background: $section-primary-bg;
+        color: $section-primary-color;
+    }
+    &.bg-color-secondary {
+        background: $section-secondary-bg;
+        color: $section-secondary-color;
+    }
+
+    &.section-bg-image {
+        background-position: 50%;
+        background-attachment: $section-bg-image-attachment;
+        background-size: cover;
+        background-repeat: no-repeat;
+        color: $section-bg-image-color;
+
+        &:before {
+            content: "";
+            display: block;
+            background: $section-bg-image-overlay;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            opacity: $section-bg-image-overlay-opacity;
+            z-index: 1;
+        }
+
+        .section-title,
+        .section-content {
+            text-shadow: $section-bg-image-text-shadow;
+        }
+
+        .container,
+        .container-fluid,
+        .container-small {
+            z-index: 2;
+            position: relative;
+        }
+    }
+
+    .container-small {
+        @include make-container();
+
+        @include media-breakpoint-up(sm) {
+            width: map-get($container-max-widths, "sm");
+        }
+
+        @include media-breakpoint-up(lg) {
+            width: map-get($container-max-widths, "md");
+        }
+    }
+}
